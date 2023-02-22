@@ -1,16 +1,27 @@
 import { ethers, upgrades } from "hardhat";
 
+import hre from "hardhat";
+
 async function main() {
-  const ContractFactory = await ethers.getContractFactory("FLUUSToken");
+  // We get the token contract to deploy
+  const FLUUSToken = await ethers.getContractFactory("FLUUSToken");
 
-  const instance = await upgrades.deployProxy(ContractFactory);
-  await instance.deployed();
+  const FToken = await FLUUSToken.deploy();
+  await FToken.deployed();
+  const FTokenAddr = FToken.address;
+  console.log("FLUUS Token deployed to:", FToken.address);
 
-  console.log(`Proxy deployed to ${instance.address}`);
+  await timeout(10000);
+  await hre.run("verify:verify", {
+    address: FTokenAddr,
+    contract: "contracts/FLUUSToken.sol:FLUUSToken",
+  });
+
+  function timeout(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
