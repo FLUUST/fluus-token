@@ -3,7 +3,9 @@
 pragma solidity ^0.8.2;
 
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Snapshot.sol";
-
+import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 /**
  * @dev Interface of the ERC20 standard as defined in the EIP.
  */
@@ -60,7 +62,8 @@ library SafeERC20 {
     }
 }
 
-contract AnyswapV6ERC20 is IERC20 {
+// TODO Add Pausable
+contract AnyswapV6ERC20 is IERC20, ERC20Snapshot, ERC20Permit {
     using SafeERC20 for IERC20;
     string public name;
     string public symbol;
